@@ -3,7 +3,5 @@ var number = function(busStops){
 
   const riders = busStops.map(stop => stop[0] - stop[1])
   return riders.reduce((sum, ride) => sum + ride, 0)
-
-  let arr = [[10, 0], [20, 30], [1, 0]]
   
 }
