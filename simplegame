@@ -1,0 +1,59 @@
+function solve(game) {
+  const memo = new Map();
+
+  function findMoves(str) {
+    if (str === "") return [[]];
+
+    if (memo.has(str)) {
+      return memo.get(str);
+    }
+
+    let solutions = [];
+    let maxMove = Number(str[0]);
+
+    for (let move = 1; move <= maxMove && move <= str.length; move++) {
+
+      // Final move must be an exact count
+      if (move === str.length) {
+        if (move === maxMove) {
+          solutions.push([move]);
+        }
+        continue;
+      }
+
+      let remaining = str.slice(move);
+      let newDigit = Number(remaining[0]) - move;
+
+      if (newDigit <= 0) continue;
+
+      let next = String(newDigit) + remaining.slice(1);
+
+      let paths = findMoves(next);
+
+      for (let path of paths) {
+        solutions.push([move, ...path]);
+      }
+    }
+
+    if (solutions.length === 0) {
+      memo.set(str, []);
+      return [];
+    }
+
+    let minLength = Math.min(...solutions.map(path => path.length));
+
+    let shortest = solutions.filter(path => path.length === minLength);
+
+    memo.set(str, shortest);
+    return shortest;
+  }
+
+  return findMoves(game).sort((a, b) => {
+    for (let i = 0; i < Math.min(a.length, b.length); i++) {
+      if (a[i] !== b[i]) {
+        return a[i] - b[i];
+      }
+    }
+    return a.length - b.length;
+  });
+}
